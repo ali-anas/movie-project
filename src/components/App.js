@@ -5,9 +5,6 @@ import MovieCard from "./MovieCard";
 import { addMovies } from "../actions";
 
 class App extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  // }
   componentDidMount() {
     // Make api call
     // get data
@@ -19,12 +16,23 @@ class App extends React.Component {
       this.forceUpdate();
     });
     store.dispatch(addMovies(data));
-
-    console.log("State", store.getState());
   }
+
+  isMovieFavourite = (movie) => {
+    const { favourites } = this.props.store.getState();
+
+    const index = favourites.indexOf(movie);
+    if (index !== -1) {
+      // found the movie
+      return true;
+    }
+    return false;
+  };
 
   render() {
     const { list } = this.props.store.getState();
+    console.log("RENDER");
+    console.log("STATE", this.props.store.getState());
     return (
       <div className="App">
         <Navbar />
@@ -35,7 +43,14 @@ class App extends React.Component {
           </div>
           <div className="list">
             {list.map((movie, index) => {
-              return <MovieCard movie={movie} key={index} />;
+              return (
+                <MovieCard
+                  movie={movie}
+                  key={index}
+                  dispatch={this.props.store.dispatch}
+                  isFavourite={this.isMovieFavourite(movie)}
+                />
+              );
             })}
           </div>
         </div>
